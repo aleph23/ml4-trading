@@ -41,17 +41,15 @@ def parse_html(html):
     meta['company'] = h1[:h1.find('(')].strip()
     meta['symbol'] = h1[h1.find('(') + 1:h1.find(')')]
 
-    match = quarter_pattern.search(h1)
-    if match:
-        meta['quarter'] = match.group(0)
-    
+    if match := quarter_pattern.search(h1):
+        meta['quarter'] = match[0]
+
     data_span = soup.find('span', attrs={"data-test-id": "post-date"})
     if data_span is not None:
         date_string = data_span.text
-        match = date_pattern.search(date_string)
-        if match:
+        if match := date_pattern.search(date_string):
             m, d, y = match.groups()
-            meta['month'] = int(list(calendar.month_abbr).index(m))
+            meta['month'] = list(calendar.month_abbr).index(m)
             meta['day'] = int(d)
             meta['year'] = int(y)
 
